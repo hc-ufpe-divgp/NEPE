@@ -56,3 +56,10 @@ A aplicação **não chama todos os registros de cursos concluídos** e **não a
 - Avaliação de Reação: gráfico de satisfação geral reduzido e área de respostas às questões ampliada.
 - Avaliação de Reação: respostas da capacitação e do instrutor apresentadas em gráficos percentuais empilhados.
 - Avaliação de Reação: clique em uma nota de satisfação geral filtra KPIs, questões e comentários; novo clique na mesma nota remove o filtro.
+
+
+## Nota metodológica — SACDC e vínculo em 2023
+- Os registros do SACDC foram importados para o 3EC em 2023; a data da base corresponde à importação/cadastro e não necessariamente à realização da capacitação.
+- A importação apresenta forte predominância da classificação de vínculo **Empregado**.
+- Por esse motivo, os vínculos do SACDC não devem ser interpretados como retrato da composição da força de trabalho do HC-UFPE em 2023.
+- O gráfico foi renomeado para **Participantes distintos por vínculo registrado** e recebeu alerta metodológico específico para 2023.
