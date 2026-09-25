@@ -1,17 +1,13 @@
-# Painel NEPE — Avaliação de Reação
+# Painel de Capacitações — NEPE
+Versão de homologação com dados atualizados até 25/09/2026.
 
-Aplicação web estática para disponibilizar os resultados da avaliação de reação das ações de capacitação do HC-UFPE/Ebserh.
+## Pesquisa
+A área **Cursos e Participantes** permite combinar filtros por ano, vínculo, nome do participante, Processo SEI, grupo/base e curso/capacitação.
 
-## Publicação no GitHub Pages
-1. Crie um repositório e envie **o conteúdo desta pasta** para a raiz do repositório.
-2. No GitHub, abra **Settings > Pages**.
-3. Em **Build and deployment**, escolha **Deploy from a branch**.
-4. Selecione a branch `main` e a pasta `/ (root)` e salve.
+## Certificados
+A consulta nominal exibe os códigos existentes na base de certificados. A fonte fornecida não informa curso, Processo SEI ou URL do certificado; por isso essas relações não são inferidas.
 
-## Atualização dos dados
-O painel lê `dados/dados_painel.json`. A planilha Excel original **não deve ser publicada**, pois contém colunas como Email e Nome.
+## Publicação
+Publique a pasta completa em um servidor web ou GitHub Pages. Não abra `index.html` diretamente pelo sistema de arquivos, pois os navegadores normalmente bloqueiam o carregamento dos JSONs locais.
 
-Para atualizar o painel com uma nova planilha, gere novamente o JSON anonimizado mantendo a mesma estrutura. A aplicação usa apenas: ano, capacitação, respostas às perguntas, satisfação, comentário positivo e ponto de melhoria.
-
-## Segurança
-GitHub Pages não é uma área privada. Tudo que estiver no repositório/site público deve ser tratado como público. O arquivo incluído nesta versão não contém as colunas Email, Nome, ID ou horários individuais.
+Consulte `AUDITORIA.md` antes da homologação.

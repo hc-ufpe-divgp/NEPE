@@ -1,33 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NEPE - Avaliação de Reação</title><link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header class="topbar">
-  <div class="brand"><div class="mark">▥</div><div><h1>NEPE - AVALIAÇÃO DE REAÇÃO</h1><div class="rule"></div></div></div>
-  <div class="header-actions"><button id="clear">LIMPAR</button><div class="update">Última atualização: <b id="updated">—</b><br><span>UDP/DIVGP - HC - UFPE</span></div></div>
-</header>
-<main>
-<section class="filters">
-<label>Escolha a capacitação a ser avaliada</label>
-<select id="course"><option value="">Todos</option></select>
-<div class="year-row"><span>Ano</span><div id="years"></div></div>
-</section>
-<section class="summary">
-  <div class="metric"><span>Quant. Respostas</span><strong id="responses">0</strong></div>
-  <div class="metric"><span>Quant. Ações</span><strong id="actions">0</strong></div>
-  <div class="metric"><span>Nota média</span><strong id="avg">—</strong></div>
-</section>
-<section class="hero-grid">
-  <article class="card"><h2>Nota geral</h2><div id="satisfaction"></div></article>
-  <article class="card comments positive"><h2>Comentários positivos</h2><div id="positive"></div></article>
-  <article class="card comments improve"><h2>Pontos de melhoria</h2><div id="negative"></div></article>
-</section>
-<section><h2 class="section-title">Avaliação da capacitação</h2><div id="questions" class="cards"></div></section>
-<section><h2 class="section-title">Avaliação do(a) instrutor(a)</h2><div id="instructors" class="cards"></div></section>
-</main>
-<footer>NEPE · Núcleo de Educação Permanente · HC-UFPE/Ebserh</footer>
-<script src="app.js"></script>
-</body></html>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Painel de Capacitações — NEPE</title><link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script></head><body>
+<header><div><h1>Painel de Capacitações — NEPE</h1><p>HC-UFPE/Ebserh · Dados atualizados até <strong>25/09/2026</strong></p></div><div class="actions"><button id="btnPng">📷 Baixar imagem</button><button id="btnXlsx">📥 Baixar Excel</button></div></header>
+<nav><button class="tab active" data-tab="geral">Visão Geral</button><button class="tab" data-tab="cursos">Cursos e Participantes</button><button class="tab" data-tab="avaliacao">Avaliação de Reação</button></nav>
+<main id="capture"><section class="filters"><div><span class="filter-title">Ano</span><div id="years" class="year-buttons"></div></div><label>Grupo/base<select id="cat"><option value="">Todos</option></select></label><label>Vínculo<select id="vinc"><option value="">Todos</option></select></label><label>Nome do participante<input id="nameQ" placeholder="Digite parte do nome"></label><label>Processo SEI<input id="procQ" placeholder="Ex.: 23477.012431"></label><label class="search">Curso/capacitação<input id="q" placeholder="Digite parte do título"></label><button id="clear">Limpar filtros</button></section>
+<div id="notice" class="notice">Os filtros podem ser combinados. A consulta nominal utiliza os nomes existentes nas bases. A base de certificados não informa o curso nem o processo SEI de cada código; por isso, o sistema não cria essa associação por inferência.</div>
+<section id="geral" class="page active"><div class="kpis"><article><span>Cursos distintos</span><b id="kCursos">—</b></article><article><span>Participações</span><b id="kPart">—</b></article><article><span>Participantes únicos</span><b id="kPessoas">—</b></article><article><span>Certificados localizados</span><b id="kCert">—</b></article><article><span>Avaliações</span><b id="kAval">—</b></article></div><div class="grid"><article class="card"><h2>Participações por ano</h2><canvas id="chAno"></canvas></article><article class="card"><h2>Participações por grupo/base</h2><canvas id="chCat"></canvas></article><article class="card"><h2>Participantes por vínculo</h2><canvas id="chVinc"></canvas></article><article class="card"><h2>Certificados por ano</h2><canvas id="chCert"></canvas></article></div></section>
+<section id="cursos" class="page"><div class="kpis"><article><span>Cursos distintos</span><b id="cCursos">—</b></article><article><span>Participações</span><b id="cPart">—</b></article><article><span>Participantes únicos</span><b id="cPessoas">—</b></article><article><span>Certificados localizados</span><b id="cCert">—</b></article></div>
+<article class="card table-card"><h2>Participações encontradas</h2><div class="table-wrap"><table><thead><tr><th>Nome</th><th>Curso/Capacitação</th><th>Data</th><th>Ano</th><th>Grupo/base</th><th>Categoria original</th><th>Vínculo</th><th>Instituição</th><th>Processo SEI</th></tr></thead><tbody id="partRows"></tbody></table></div><p class="small" id="partCount"></p></article>
+<article class="card table-card"><h2>Certificados encontrados para os filtros nominais</h2><p class="small">A base de certificados fornecida contém nome, data, categoria, instituição, vínculo e código, mas não contém o título do curso nem o Processo SEI.</p><div class="table-wrap"><table><thead><tr><th>Nome</th><th>Data de emissão</th><th>Ano</th><th>Categoria</th><th>Vínculo</th><th>Instituição</th><th>Código do certificado</th></tr></thead><tbody id="certRows"></tbody></table></div><p class="small" id="certCount"></p></article></section>
+<section id="avaliacao" class="page"><div class="kpis"><article><span>Avaliações</span><b id="aAval">—</b></article><article><span>Capacitações avaliadas</span><b id="aCursos">—</b></article><article><span>Satisfação média</span><b id="aMedia">—</b></article><article><span>Notas 4 ou 5</span><b id="aPos">—</b></article></div><div class="grid"><article class="card"><h2>Satisfação geral</h2><canvas id="chSat"></canvas></article><article class="card"><h2>Respostas às questões</h2><canvas id="chQuest"></canvas></article></div><div class="comments"><article class="card"><h2>Comentários positivos</h2><div id="posComments" class="comment-list"></div></article><article class="card"><h2>Pontos de melhoria</h2><div id="negComments" class="comment-list"></div></article></div></section>
+</main><footer>NEPE · HC-UFPE/Ebserh · Última atualização: 25/09/2026</footer><script src="app.js"></script></body></html>
