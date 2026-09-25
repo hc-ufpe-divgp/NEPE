@@ -1,13 +1,12 @@
-# Painel de Capacitações — NEPE
-Versão de homologação com dados atualizados até 25/09/2026.
+# Painel de Capacitações NEPE
 
-## Pesquisa
-A área **Cursos e Participantes** permite combinar filtros por ano, vínculo, nome do participante, Processo SEI, grupo/base e curso/capacitação.
+Dados até 25/09/2026.
 
-## Certificados
-A consulta nominal exibe os códigos existentes na base de certificados. A fonte fornecida não informa curso, Processo SEI ou URL do certificado; por isso essas relações não são inferidas.
+## Como testar
+Como a aplicação lê arquivos JSON, não abra `index.html` diretamente pelo Explorador do Windows. Publique os arquivos no GitHub Pages ou use um servidor web local.
 
-## Publicação
-Publique a pasta completa em um servidor web ou GitHub Pages. Não abra `index.html` diretamente pelo sistema de arquivos, pois os navegadores normalmente bloqueiam o carregamento dos JSONs locais.
+## GitHub Pages
+Envie **todo o conteúdo** desta pasta para a raiz do repositório: `index.html`, `style.css`, `app.js` e a pasta `dados`. Depois ative Pages em `Settings > Pages > Deploy from a branch > main > /(root)`.
 
-Consulte `AUDITORIA.md` antes da homologação.
+## Regra importante
+SACDC e Registros - PE são tratados como bases de certificação. Cursos Livres e Obrigatórios não são classificados como concluídos sem evidência adicional. A base de códigos de certificados é consultável separadamente e não é associada automaticamente a cursos.
