@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel de Capacitações NEPE - HC-UFPE</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas/dist/html2canvas.min.js"></script>
+</head>
+<body>
+<header><div><h1>Painel de Capacitações NEPE - HC-UFPE</h1><p>Dados atualizados até 25/09/2026</p></div><div class="actions"><button id="excel">Exportar Excel</button><button id="png">Baixar painel em PNG</button></div></header>
+<nav><button class="tab active" data-tab="geral">Visão Geral</button><button class="tab" data-tab="consulta">Cursos e Participantes</button><button class="tab" data-tab="certificados">Certificados</button><button class="tab" data-tab="avaliacao">Avaliação de Reação</button></nav>
+<main id="capture">
+<section id="globalFilters" class="filters">
+<label>Nome<input id="nome" list="listaTrabalhadores" placeholder="Parte do nome"><datalist id="listaTrabalhadores"></datalist></label>
+<label>Vínculo<select id="vinc"><option value="">Todos</option></select></label>
+<label>Processo SEI<input id="proc" placeholder="Número ou parte"></label>
+<label>Ano<select id="ano"><option value="">Todos</option></select></label>
+<label>Curso<input id="curso" placeholder="Parte do título"></label>
+<label>Grupo<select id="grupo"><option value="">Todos</option></select></label>
+<button id="clear">Limpar filtros</button>
+</section>
+
+<section id="geral" class="page active">
+<div class="note">Os indicadores distinguem registros de capacitação de certificados localizados por código. O vínculo corresponde ao registrado nas bases históricas e não representa necessariamente a força de trabalho atual.</div>
+<div class="kpis"><article><span>Participações (cursos concluídos ou em andamento)</span><b id="gReg">—</b></article><article><span>Participantes distintos</span><b id="gPes">—</b></article><article><span>Registros em bases de certificação</span><b id="gCertBase">—</b></article><article><span>Certificados localizados por códigos</span><b id="gCod">—</b></article><article><span>Avaliações de reação</span><b id="gAval">—</b></article></div>
+<div class="grid"><article class="card"><h2>Participações por ano</h2><canvas id="chAno"></canvas></article><article class="card"><h2>Participações por grupo/base</h2><canvas id="chGrupo"></canvas></article><article class="card"><h2>Participantes distintos por vínculo registrado ⓘ</h2><canvas id="chVinc"></canvas><p class="small">Em 2023, os dados são fortemente afetados pela importação histórica do SACDC para o 3EC, com predominância do vínculo “Empregado”.</p></article><article class="card"><h2>Certificados localizados por código, por ano</h2><canvas id="chCod"></canvas><p class="small">Fonte: Base de Certificados HC-UFPE/NEPE.</p></article></div>
+</section>
+
+<section id="consulta" class="page">
+<div class="subfilters"><label>Selecionar trabalhador<input id="trabalhadorCombo" list="listaTrabalhadores" placeholder="Digite para localizar um trabalhador"></label></div>
+<div class="note"><b>Nota sobre as datas:</b> nos registros provenientes do SACDC, a data apresentada corresponde à data de importação/cadastro para o 3EC e não necessariamente à data de realização da capacitação. SACDC e Registros - PE correspondem a cursos finalizados; as demais bases podem incluir cursos em andamento e finalizados.</div>
+<div class="kpis"><article><span>Registros encontrados</span><b id="cReg">—</b></article><article><span>Participantes distintos</span><b id="cPes">—</b></article><article><span>Cursos/títulos distintos</span><b id="cCursos">—</b></article><article><span>Processos SEI distintos</span><b id="cProc">—</b></article></div>
+<article class="card"><h2>Registros de capacitação</h2><p id="capInfo" class="small"></p><div class="tablewrap"><table><thead><tr><th>Nome</th><th>Curso</th><th>Data</th><th>Ano</th><th>Grupo</th><th>Categoria</th><th>Vínculo</th><th>Processo SEI</th><th>Situação</th></tr></thead><tbody id="capRows"></tbody></table></div></article>
+</section>
+
+<section id="certificados" class="page">
+<div class="certSearch"><label>Código do certificado<input id="codigo" placeholder="Digite o código ou parte"></label></div>
+<div class="note">O quantitativo desta área é obtido da Base de Certificados HC-UFPE/NEPE e considera os códigos localizados. Os códigos não são associados automaticamente a cursos específicos quando essa relação não está disponível na fonte.</div>
+<div class="kpis"><article><span>Certificados localizados</span><b id="zCert">—</b></article><article><span>Pessoas com certificado</span><b id="zPes">—</b></article><article><span>Códigos distintos</span><b id="zCod">—</b></article></div>
+<article class="card"><h2>Certificados</h2><p id="certInfo" class="small"></p><div class="tablewrap"><table><thead><tr><th>Nome</th><th>Data de emissão</th><th>Ano</th><th>Categoria</th><th>Vínculo</th><th>Código</th></tr></thead><tbody id="certRows"></tbody></table></div></article>
+</section>
+
+<section id="avaliacao" class="page">
+<div class="note">Avaliação de reação dos cursos emitidos pelo NEPE</div>
+<div class="subfilters"><label>Capacitação avaliada<input id="avaliacaoCombo" list="listaAvaliacoes" placeholder="Digite para localizar pelo título"><datalist id="listaAvaliacoes"></datalist></label><button id="clearAval">Limpar seleção</button></div>
+<div id="satFilterNote" class="interaction-note" hidden></div>
+<div class="kpis"><article><span>Avaliações</span><b id="aAval">—</b></article><article><span>Capacitações avaliadas</span><b id="aCursos">—</b></article><article><span>Satisfação média</span><b id="aMedia">—</b></article><article><span>Avaliações 4 ou 5</span><b id="aPos">—</b></article></div>
+<div class="evalTop"><article class="card satCard"><h2>Satisfação geral</h2><canvas id="chSat"></canvas><p class="small">Clique em uma nota para filtrar as respostas às questões.</p></article><article class="card"><h2>Avaliações por ano</h2><canvas id="chAvalAno"></canvas></article></div>
+<div class="questionGrid"><article class="card"><h2>Respostas às questões da capacitação</h2><canvas id="chQuestoesCap"></canvas></article><article class="card"><h2>Avaliação do instrutor</h2><canvas id="chQuestoesInst"></canvas></article></div>
+<div class="comments"><article class="card"><h2>Comentários positivos</h2><div id="posComments" class="commentlist"></div></article><article class="card"><h2>Pontos de melhoria</h2><div id="negComments" class="commentlist"></div></article></div>
+</section>
+</main>
+<footer>NEPE / HC-UFPE · Dados atualizados até 25/09/2026</footer>
+<script src="app.js"></script>
+</body></html>

@@ -63,3 +63,10 @@ A aplicação **não chama todos os registros de cursos concluídos** e **não a
 - A importação apresenta forte predominância da classificação de vínculo **Empregado**.
 - Por esse motivo, os vínculos do SACDC não devem ser interpretados como retrato da composição da força de trabalho do HC-UFPE em 2023.
 - O gráfico foi renomeado para **Participantes distintos por vínculo registrado** e recebeu alerta metodológico específico para 2023.
+
+
+## Ajuste — Avaliação de Reação
+- A barra geral com Nome, Vínculo, Processo SEI, Ano, Curso e Grupo é ocultada integralmente na aba Avaliação de Reação.
+- Permanece apenas a seleção pesquisável da capacitação por título.
+- Texto da área: “Avaliação de reação dos cursos emitidos pelo NEPE”.
+- O campo Nome não é utilizado na Avaliação de Reação.

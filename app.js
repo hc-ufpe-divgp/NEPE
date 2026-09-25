@@ -12,7 +12,7 @@ function initFilters(){
  let av=[...new Map(S.aval.filter(x=>x.capacitacao).map(x=>[norm(x.capacitacao),x.capacitacao.trim()])).values()].sort((a,b)=>a.localeCompare(b,'pt-BR'));$('#listaAvaliacoes').innerHTML=av.map(x=>`<option value="${esc(x)}"></option>`).join('');
 }
 function events(){
- $$('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;$$('.tab,.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+S.tab).classList.add('active');render()});
+ $$('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;$$('.tab,.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+S.tab).classList.add('active');$('#globalFilters').style.display=S.tab==='avaliacao'?'none':'grid';render()});
  ['nome','proc','curso'].forEach(id=>$('#'+id).oninput=render);['vinc','ano','grupo'].forEach(id=>$('#'+id).onchange=render);$('#codigo').oninput=render;
  $('#trabalhadorCombo').oninput=()=>{$('#nome').value=$('#trabalhadorCombo').value;render()};
  $('#avaliacaoCombo').oninput=()=>{S.sat=null;render()}; $('#clearAval').onclick=()=>{$('#avaliacaoCombo').value='';S.sat=null;render()};
