@@ -70,3 +70,10 @@ A aplicação **não chama todos os registros de cursos concluídos** e **não a
 - Permanece apenas a seleção pesquisável da capacitação por título.
 - Texto da área: “Avaliação de reação dos cursos emitidos pelo NEPE”.
 - O campo Nome não é utilizado na Avaliação de Reação.
+
+
+## Ajuste de homologação — comparação e avaliação compacta
+- Certificados voltaram a ser exibidos dentro de Cursos e Participantes, permitindo comparação quantitativa com participações.
+- A diferença não identifica quais cursos geraram ou não certificado, pois a base de códigos não informa o curso associado.
+- A Avaliação de Reação passou a exibir a data/período da avaliação a partir da Hora de conclusão do formulário.
+- Os gráficos das perguntas foram reorganizados em cartões compactos lado a lado, com quatro por linha em telas largas.
