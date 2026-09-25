@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEPE - Avaliação de Reação</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="mark">▥</div><div><h1>NEPE - AVALIAÇÃO DE REAÇÃO</h1><div class="rule"></div></div></div>
+  <div class="header-actions"><button id="clear">LIMPAR</button><div class="update">Última atualização: <b id="updated">—</b><br><span>UDP/DIVGP - HC - UFPE</span></div></div>
+</header>
+<main>
+<section class="filters">
+<label>Escolha a capacitação a ser avaliada</label>
+<select id="course"><option value="">Todos</option></select>
+<div class="year-row"><span>Ano</span><div id="years"></div></div>
+</section>
+<section class="summary">
+  <div class="metric"><span>Quant. Respostas</span><strong id="responses">0</strong></div>
+  <div class="metric"><span>Quant. Ações</span><strong id="actions">0</strong></div>
+  <div class="metric"><span>Nota média</span><strong id="avg">—</strong></div>
+</section>
+<section class="hero-grid">
+  <article class="card"><h2>Nota geral</h2><div id="satisfaction"></div></article>
+  <article class="card comments positive"><h2>Comentários positivos</h2><div id="positive"></div></article>
+  <article class="card comments improve"><h2>Pontos de melhoria</h2><div id="negative"></div></article>
+</section>
+<section><h2 class="section-title">Avaliação da capacitação</h2><div id="questions" class="cards"></div></section>
+<section><h2 class="section-title">Avaliação do(a) instrutor(a)</h2><div id="instructors" class="cards"></div></section>
+</main>
+<footer>NEPE · Núcleo de Educação Permanente · HC-UFPE/Ebserh</footer>
+<script src="app.js"></script>
+</body></html>
