@@ -16,3 +16,46 @@
 .yearBtn.active{background:#087d91;color:#fff;border-color:#087d91}
 @media(max-width:1050px){.miniCharts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.miniCharts{grid-template-columns:1fr}.miniCard canvas{height:210px!important;max-height:210px!important}}
+
+
+/* NEPE 2.0 — relatório legível */
+.reportHeading{display:none}
+@media screen and (min-width:900px){
+  #avaliacao .evalTop{grid-template-columns:1fr 1fr;gap:14px}
+  #avaliacao .miniCharts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  #avaliacao .miniCard{padding:14px}
+  #avaliacao .miniCard h3{font-size:15px;line-height:1.4;height:auto;min-height:42px;overflow:visible}
+  #avaliacao .miniCard canvas{height:220px!important;max-height:220px!important}
+  #avaliacao .commentsMini .commentlist{max-height:220px;height:220px}
+  #avaliacao .commentsMini .comment{font-size:13px;line-height:1.45}
+}
+@page{size:A4 portrait;margin:13mm}
+@media print{
+  html,body{background:#fff!important;color:#111!important;font-family:Arial,sans-serif}
+  header,nav,footer,#globalFilters,#avaliacao .evalFilter,#avaliacao .note,#avaliacao .interaction-note,
+  #avaliacao .yearCard .small,#avaliacao .satCard .small{display:none!important}
+  main{padding:0!important;margin:0!important}
+  .page{display:none!important}
+  #avaliacao{display:block!important}
+  #avaliacao .reportHeading{display:block!important;border-bottom:2px solid #075d6d;margin-bottom:9mm;padding-bottom:3mm}
+  #avaliacao .reportHeading h2{font-size:17pt;margin:0 0 3mm}
+  #avaliacao .reportHeading p{font-size:10pt;margin:1mm 0}
+  #avaliacao .kpis{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:3mm}
+  #avaliacao .kpis article{padding:3mm!important;border:1px solid #ddd;box-shadow:none}
+  #avaliacao .kpis span{font-size:9pt}
+  #avaliacao .kpis b{font-size:15pt}
+  #avaliacao .evalTop{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4mm}
+  #avaliacao .card,#avaliacao .miniCard{box-shadow:none!important;border:1px solid #d8e1e4;border-radius:4px;padding:3mm!important}
+  #avaliacao .satCard canvas{height:55mm!important;max-height:55mm!important}
+  #avaliacao .yearButtons{margin:3mm 0}
+  #avaliacao .yearBtn{font-size:9pt;padding:2mm 3mm}
+  #avaliacao .commentsMini .commentlist{height:auto!important;max-height:none!important;overflow:visible!important}
+  #avaliacao .commentsMini .comment{font-size:9pt!important;line-height:1.3!important;overflow-wrap:anywhere}
+  #avaliacao .miniCharts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:3mm}
+  #avaliacao .miniCard h3{font-size:10pt!important;height:auto!important;min-height:0!important;overflow:visible!important}
+  #avaliacao .miniCard canvas{height:50mm!important;max-height:50mm!important}
+  #avaliacao .miniCard,#avaliacao .kpis article,#avaliacao .satCard,#avaliacao .yearCard{break-inside:avoid;page-break-inside:avoid}
+  #avaliacao .commentsMini{break-inside:auto;page-break-inside:auto}
+  #avaliacao .sectionTitle{font-size:13pt;margin:6mm 0 3mm;break-after:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
