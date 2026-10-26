@@ -98,3 +98,17 @@
 .responseTotal{margin:10px 0 0;font-size:12px;color:#586771}
 @media(max-width:850px){#avaliacao .miniCharts{grid-template-columns:1fr}}
 @media print{body.printing-report #avaliacao .miniCharts{display:none!important}}
+
+/* Relatório em barras vetoriais HTML, sem captura de tela ou gráficos rasterizados */
+@media print{
+ body.printing-report #printReport .report-question{break-inside:avoid;page-break-inside:avoid;padding:2.5mm 0 3mm;border-bottom:1px solid #ddd}
+ body.printing-report #printReport .responseBar{height:6mm!important;width:100%!important;display:flex!important;overflow:hidden!important;border-radius:2mm;background:#edf1f3!important;margin:2mm 0}
+ body.printing-report #printReport .responseBar>span{height:100%!important;display:block!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ body.printing-report #printReport .responseDetails{display:grid!important;gap:1mm!important;margin-top:2mm!important}
+ body.printing-report #printReport .responseRow{display:grid!important;grid-template-columns:minmax(0,1fr) 23mm 24mm!important;gap:2mm!important;align-items:center;font-size:9pt!important}
+ body.printing-report #printReport .responseLabel{display:flex!important;gap:2mm!important;align-items:center!important}
+ body.printing-report #printReport .responseLabel i{width:3mm!important;height:3mm!important;display:inline-block!important;flex-shrink:0!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ body.printing-report #printReport .responseRow strong{font-size:9pt!important;text-align:right}
+ body.printing-report #printReport .responseCount{font-size:8.5pt!important;text-align:right}
+ body.printing-report #printReport .responseTotal{font-size:8pt!important;margin:2mm 0 0!important}
+}
