@@ -59,3 +59,26 @@
   #avaliacao .sectionTitle{font-size:13pt;margin:6mm 0 3mm;break-after:avoid}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+#printReport{display:none}
+@page{size:A4 portrait;margin:16mm 14mm}
+@media print{
+  body.printing-report{background:white!important;color:#161616!important;font:10.5pt/1.38 Arial,sans-serif!important}
+  body.printing-report > header,body.printing-report > nav,body.printing-report > main,body.printing-report > footer{display:none!important}
+  body.printing-report #printReport{display:block!important;position:static!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;color:#161616!important}
+  #printReport .report-head{border-bottom:2px solid #125b6a;padding-bottom:5mm;margin-bottom:6mm}
+  #printReport h1{font-size:18pt!important;margin:0 0 2mm}
+  #printReport h2{font-size:12.5pt!important;margin:7mm 0 3mm;break-after:avoid;page-break-after:avoid}
+  #printReport h3{font-size:10.5pt!important;margin:4mm 0 2mm;break-after:avoid;page-break-after:avoid}
+  #printReport p{margin:2mm 0;overflow-wrap:anywhere}
+  #printReport table{width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;font-size:9.5pt!important;margin:0 0 4mm!important;break-inside:avoid;page-break-inside:avoid}
+  #printReport th,#printReport td{padding:2mm 2.5mm!important;border:1px solid #bbb!important;vertical-align:top!important;overflow-wrap:anywhere!important}
+  #printReport th{background:#e8f0f2!important;text-align:left!important}
+  #printReport td.num,#printReport th.num{text-align:right!important;width:23%!important;white-space:nowrap}
+  #printReport .summary th{width:60%}
+  #printReport .report-question{break-inside:avoid;page-break-inside:avoid;margin-bottom:3mm}
+  #printReport .report-comment{break-inside:avoid;page-break-inside:avoid;padding:2mm 0;border-bottom:1px solid #ddd}
+  #printReport .report-meta,#printReport .report-foot{font-size:9pt!important;color:#444}
+  #printReport .report-foot{margin-top:7mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}

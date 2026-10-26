@@ -22,7 +22,7 @@ function events(){
  $('#trabalhadorCombo').oninput=()=>{$('#nome').value=$('#trabalhadorCombo').value;render()};
  $('#avaliacaoCombo').oninput=()=>{S.sat=null;S.evalYear=null;render()}; $('#clearAval').onclick=()=>{$('#avaliacaoCombo').value='';S.sat=null;S.evalYear=null;render()};
  $('#clear').onclick=()=>{['nome','proc','curso','tituloCapCombo','trabalhadorCombo','avaliacaoCombo'].forEach(id=>$('#'+id).value='');['vinc','ano','grupo'].forEach(id=>$('#'+id).value='');S.sat=null;S.evalYear=null;render()};
- $('#png').onclick=downloadPNG;$('#excel').onclick=downloadExcel;$('#pdf').onclick=()=>{if(S.tab!=='avaliacao'){alert('Abra a aba Avaliação de Reação para gerar o relatório.');return;}window.print()};
+ $('#png').onclick=downloadPNG;$('#excel').onclick=downloadExcel;$('#pdf').onclick=()=>{if(S.tab!=='avaliacao'){alert('Abra a aba Avaliação de Reação para gerar o relatório.');return;}gerarRelatorioPDF()};
 }
 function filters(){return {n:norm($('#nome').value),v:$('#vinc').value,p:norm($('#proc').value),a:$('#ano').value,c:norm($('#curso').value),g:$('#grupo').value}}
 function fc(){let f=filters();return S.caps.filter(x=>(!f.n||norm(x.nome).includes(f.n))&&(!f.v||x.vinculo===f.v)&&(!f.p||norm(x.processo).includes(f.p))&&(!f.a||String(x.ano)===f.a)&&(!f.c||norm(x.curso).includes(f.c))&&(!f.g||x.grupo===f.g))}
@@ -61,6 +61,49 @@ function renderA(base){
  renderQuestionCharts(a);let note=$('#satFilterNote');if(S.sat!==null){note.hidden=false;note.innerHTML=`<b>Filtro pela satisfação geral:</b> nota ${esc(S.sat)} — ${fmt(a.length)} avaliações. Clique novamente na nota para remover.`}else{note.hidden=true;note.textContent=''}$('#posComments').innerHTML=a.filter(x=>x.comentario_positivo).map(x=>`<div class="comment">${esc(x.comentario_positivo)}</div>`).join('')||'<p class="small">Sem comentários.</p>';$('#negComments').innerHTML=a.filter(x=>x.ponto_melhoria).map(x=>`<div class="comment">${esc(x.ponto_melhoria)}</div>`).join('')||'<p class="small">Sem pontos registrados.</p>'}
 function renderQuestionCharts(a){const qs=a.length&&a[0].respostas?Object.keys(a[0].respostas):[];renderMiniSet('#questionCapGrid',a,qs.slice(0,8));renderMiniSet('#questionInstGrid',a,qs.slice(8))}
 function renderMiniSet(container,a,qs){let box=$(container);box.innerHTML=qs.map((q,i)=>`<article class="miniCard"><h3 title="${esc(q)}">${esc(q)}</h3><canvas id="mini_${container.slice(1)}_${i}"></canvas></article>`).join('');qs.forEach((q,i)=>{let id=`#mini_${container.slice(1)}_${i}`,m=count(a,x=>x.respostas?.[q]),labels=Object.keys(m);if(charts[id])charts[id].destroy();charts[id]=new Chart($(id),{type:'doughnut',data:{labels,datasets:[{data:labels.map(k=>m[k])}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${(100*c.raw/a.length).toFixed(1).replace('.',',')}%)`}}}}})})}
+
+function gerarRelatorioPDF(){
+  if(S.tab!=='avaliacao'){alert('Selecione Avaliação de Reação.');return;}
+  // PDF uses the selected course/year but does not inherit the interactive satisfaction click filter.
+  const a=faBase(), titulo=$('#avaliacaoCombo').value.trim()||'Todas as capacitações';
+  const datas=a.map(x=>x.data_avaliacao).filter(Boolean).sort();
+  const periodo=datas.length?(brDate(datas[0])+(datas.length>1?' a '+brDate(datas[datas.length-1]):'')):'Sem data';
+  const notas=[1,2,3,4,5], validas=a.map(x=>Number(x.satisfacao)).filter(x=>notas.includes(x));
+  const percent=(n,d)=>d?(100*n/d).toFixed(1).replace('.',',')+'%':'—';
+  const media=validas.length?(validas.reduce((t,n)=>t+n,0)/validas.length).toFixed(2).replace('.',','):'—';
+  const positivos=validas.filter(n=>n>=4).length;
+  const keys=[...new Set(a.flatMap(x=>Object.keys(x.respostas||{})))];
+  const trows=(items)=>items.map(([rotulo,n])=>`<tr><td>${esc(rotulo)}</td><td class="num">${fmt(n)}</td><td class="num">${percent(n,items.reduce((s,x)=>s+x[1],0))}</td></tr>`).join('');
+  const satisfacao=notas.map(n=>['Nota '+n,validas.filter(x=>x===n).length]);
+  const pergunta=(q,i)=>{
+    const respostas=a.map(x=>x.respostas?.[q]).filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='');
+    const contagens=new Map();
+    respostas.forEach(v=>{const k=String(v).trim();contagens.set(k,(contagens.get(k)||0)+1)});
+    const linhas=[...contagens].sort((a,b)=>b[1]-a[1]).map(([rotulo,n])=>`<tr><td>${esc(rotulo)}</td><td class="num">${fmt(n)}</td><td class="num">${percent(n,respostas.length)}</td></tr>`).join('');
+    return `<div class="report-question"><h3>${i+1}. ${esc(q)}</h3><table><thead><tr><th>Resposta</th><th>Quantidade</th><th>Percentual</th></tr></thead><tbody>${linhas||'<tr><td colspan="3">Sem respostas</td></tr>'}</tbody><tfoot><tr><th>Total de respostas válidas</th><th class="num">${fmt(respostas.length)}</th><th class="num">${respostas.length?'100,0%':'—'}</th></tr></tfoot></table></div>`;
+  };
+  const comentarios=(campo)=>{const vals=a.map(x=>x[campo]).filter(x=>x&&String(x).trim());return `<p class="report-meta">${fmt(vals.length)} comentário(s)</p>${vals.length?vals.map((v,i)=>`<p class="report-comment"><b>${i+1}.</b> ${esc(v)}</p>`).join(''):'<p>Sem comentários registrados.</p>'}`};
+  const blocos=keys.map(pergunta);
+  const out=document.querySelector('#printReport');
+  out.innerHTML=`<div class="report-head"><h1>Relatório de Avaliação de Reação</h1><p>NEPE · HC-UFPE</p><p><b>Capacitação:</b> ${esc(titulo)}</p><p><b>Ano:</b> ${esc(S.evalYear||'Todos')} &nbsp; <b>Período das avaliações:</b> ${esc(periodo)}</p><p><b>Emissão:</b> ${new Date().toLocaleDateString('pt-BR')}</p></div>
+  <h2>1. Síntese dos resultados</h2><table class="summary"><tbody>
+  <tr><th>Formulários recebidos</th><td>${fmt(a.length)}</td></tr>
+  <tr><th>Capacitações avaliadas</th><td>${fmt(uniq(a,x=>norm(x.capacitacao)))}</td></tr>
+  <tr><th>Respostas válidas para satisfação</th><td>${fmt(validas.length)}</td></tr>
+  <tr><th>Satisfação média (1 a 5)</th><td>${media}</td></tr>
+  <tr><th>Notas 4 ou 5</th><td>${fmt(positivos)} (${percent(positivos,validas.length)})</td></tr></tbody></table>
+  <h2>2. Distribuição da satisfação geral</h2><table><thead><tr><th>Nota</th><th>Quantidade</th><th>Percentual</th></tr></thead><tbody>${trows(satisfacao)}</tbody><tfoot><tr><th>Total de respostas válidas</th><th class="num">${fmt(validas.length)}</th><th class="num">${validas.length?'100,0%':'—'}</th></tr></tfoot></table>
+  <h2>3. Questões da capacitação</h2>${blocos.slice(0,8).join('')||'<p>Sem respostas.</p>'}
+  <h2>4. Avaliação do instrutor</h2>${blocos.slice(8).join('')||'<p>Sem respostas.</p>'}
+  <h2>5. Comentários positivos</h2>${comentarios('comentario_positivo')}
+  <h2>6. Pontos de melhoria</h2>${comentarios('ponto_melhoria')}
+  <p class="report-foot">Percentuais calculados sobre as respostas válidas de cada pergunta. Valores podem não somar exatamente 100% devido ao arredondamento. Os comentários são reproduzidos integralmente conforme os registros.</p>`;
+  document.body.classList.add('printing-report');
+  const cleanup=()=>{document.body.classList.remove('printing-report');window.removeEventListener('afterprint',cleanup)};
+  window.addEventListener('afterprint',cleanup);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+}
+
 async function downloadPNG(){if(!window.html2canvas){alert('Biblioteca de imagem não carregou. Verifique a conexão com a internet.');return}let cv=await html2canvas($('#capture'),{scale:1.4,backgroundColor:'#f4f7f9'}),a=document.createElement('a');a.download=`painel-nepe-${S.tab}.png`;a.href=cv.toDataURL('image/png');a.click()}
 function downloadExcel(){if(!window.XLSX){alert('Biblioteca de Excel não carregou. Verifique a conexão com a internet.');return}let wb=XLSX.utils.book_new();if(S.tab==='avaliacao'){XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(fa()),'Avaliações')}else{XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(fc()),'Capacitações');if(S.tab==='consulta')XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(certificadosConsulta()),'Certificados')}XLSX.writeFile(wb,`NEPE_${S.tab}_filtrado.xlsx`)}
 load().catch(e=>{document.body.innerHTML='<div style="padding:30px;font-family:Arial"><h2>Não foi possível carregar os dados</h2><p>Abra a aplicação por um servidor web (como GitHub Pages), não diretamente pelo arquivo index.html.</p><pre>'+esc(e.message)+'</pre></div>'});
