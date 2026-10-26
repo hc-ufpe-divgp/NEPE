@@ -1,0 +1,3 @@
+VERSÃO DE TESTE — não substituir o site antes de homologação.
+Corrigida exibição de certificados apenas por trabalhador exato, e modo por capacitação sem comparação inválida.
+Não há auditoria completa ou teste visual nesta entrega.
