@@ -62,12 +62,13 @@ function renderA(base){
 function renderQuestionCharts(a){const qs=a.length&&a[0].respostas?Object.keys(a[0].respostas):[];renderMiniSet('#questionCapGrid',a,qs.slice(0,8));renderMiniSet('#questionInstGrid',a,qs.slice(8))}
 function renderMiniSet(container,a,qs){
  const box=$(container);
- const palette={'SIM':'#2d9fe5','PARCIAL':'#ff6584','NÃO':'#d73d40','NÃO SE APLICA':'#9aa6b2'};
+ const palette={'SIM':'#2d9fe5','PARCIAL':'#ff6584','NAO':'#d73d40','NAO SE APLICA':'#9aa6b2','OTIMO':'#1f4e79','BOM':'#74add1','REGULAR':'#fee08b','FRACO':'#d73027','RUIM':'#d73027'};
+  const corResposta=label=>{const k=norm(label).toUpperCase().replace(/[^A-Z0-9 ]/g,'').trim();return palette[k]||'#607d8b'};
  box.innerHTML=qs.map(q=>{
    const m=count(a,x=>x.respostas?.[q]);const entries=Object.entries(m).sort((x,y)=>y[1]-x[1]);
    const total=entries.reduce((sum,x)=>sum+x[1],0);
-   const segments=entries.map(([label,n])=>{const pct=total?100*n/total:0;const key=norm(label).toUpperCase();const color=palette[key]||'#607d8b';return `<span style="width:${pct}%;background:${color}" title="${esc(label)}: ${fmt(n)} (${pct.toFixed(1).replace('.',',')}%)"></span>`}).join('');
-   const rows=entries.map(([label,n])=>{const pct=total?100*n/total:0;const key=norm(label).toUpperCase();const color=palette[key]||'#607d8b';return `<div class="responseRow"><span class="responseLabel"><i style="background:${color}"></i>${esc(label)}</span><strong>${pct.toFixed(1).replace('.',',')}%</strong><span class="responseCount">${fmt(n)} resp.</span></div>`}).join('');
+   const segments=entries.map(([label,n])=>{const pct=total?100*n/total:0;const color=corResposta(label);return `<span style="width:${pct}%;background:${color}" title="${esc(label)}: ${fmt(n)} (${pct.toFixed(1).replace('.',',')}%)"></span>`}).join('');
+   const rows=entries.map(([label,n])=>{const pct=total?100*n/total:0;const color=corResposta(label);return `<div class="responseRow"><span class="responseLabel"><i style="background:${color}"></i>${esc(label)}</span><strong>${pct.toFixed(1).replace('.',',')}%</strong><span class="responseCount">${fmt(n)} resp.</span></div>`}).join('');
    return `<article class="miniCard responseCard"><h3>${esc(q)}</h3><div class="responseBar" role="img" aria-label="Distribuição das respostas">${segments}</div><div class="responseDetails">${rows||'<p>Sem respostas</p>'}</div><p class="responseTotal">${fmt(total)} respostas válidas</p></article>`;
  }).join('');
 }
@@ -89,7 +90,7 @@ function gerarRelatorioPDF(){
     const respostas=a.map(x=>x.respostas?.[q]).filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='');
     const contagens=new Map();
     respostas.forEach(v=>{const k=String(v).trim();contagens.set(k,(contagens.get(k)||0)+1)});
-    const linhas=[...contagens].sort((a,b)=>b[1]-a[1]).map(([rotulo,n])=>`<tr><td>${esc(rotulo)}</td><td class="num">${fmt(n)}</td><td class="num">${percent(n,respostas.length)}</td></tr>`).join('');
+    const linhas=[...contagens].sort((a,b)=>b[1]-a[1]).map(([rotulo,n])=>`<tr><td>${esc(rotulo)}</td><td class="num">${fmt(n)}</td><td class="num">${percent(n,respostas.length)}<div style="height:7px;background:#e8edf0;margin-top:3px"><div style="height:7px;width:${respostas.length?100*n/respostas.length:0}%;background:${({otimo:'#1f4e79',bom:'#74add1',regular:'#fee08b',fraco:'#d73027',ruim:'#d73027'}[norm(rotulo).replace(/[^a-z ]/g,'').trim()]||'#607d8b')}"></div></div></td></tr>`).join('');
     return `<div class="report-question"><h3>${i+1}. ${esc(q)}</h3><table><thead><tr><th>Resposta</th><th>Quantidade</th><th>Percentual</th></tr></thead><tbody>${linhas||'<tr><td colspan="3">Sem respostas</td></tr>'}</tbody><tfoot><tr><th>Total de respostas válidas</th><th class="num">${fmt(respostas.length)}</th><th class="num">${respostas.length?'100,0%':'—'}</th></tr></tfoot></table></div>`;
   };
   const comentarios=(campo)=>{const vals=a.map(x=>x[campo]).filter(x=>x&&String(x).trim());return `<p class="report-meta">${fmt(vals.length)} comentário(s)</p>${vals.length?vals.map((v,i)=>`<p class="report-comment"><b>${i+1}.</b> ${esc(v)}</p>`).join(''):'<p>Sem comentários registrados.</p>'}`};
