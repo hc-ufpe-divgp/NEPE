@@ -82,3 +82,19 @@
   #printReport .report-foot{margin-top:7mm}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* Gráficos de perguntas: barras HTML nítidas, valores sempre visíveis */
+#avaliacao .miniCharts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#avaliacao .responseCard{padding:16px;min-height:0}
+#avaliacao .responseCard h3{height:auto;min-height:0;overflow:visible;font-size:15px;line-height:1.35;margin:0 0 14px}
+.responseBar{display:flex;width:100%;height:19px;border-radius:8px;overflow:hidden;background:#edf1f3}
+.responseBar>span{display:block;height:100%;min-width:0}
+.responseDetails{margin-top:12px;display:grid;gap:8px}
+.responseRow{display:grid;grid-template-columns:minmax(0,1fr) 75px 90px;gap:8px;align-items:center;font-size:13px}
+.responseLabel{display:flex;gap:8px;align-items:center;min-width:0;overflow-wrap:anywhere}
+.responseLabel i{width:11px;height:11px;flex:0 0 11px;border-radius:2px}
+.responseRow strong{text-align:right;font-size:14px}
+.responseCount{text-align:right;color:#53616a}
+.responseTotal{margin:10px 0 0;font-size:12px;color:#586771}
+@media(max-width:850px){#avaliacao .miniCharts{grid-template-columns:1fr}}
+@media print{body.printing-report #avaliacao .miniCharts{display:none!important}}

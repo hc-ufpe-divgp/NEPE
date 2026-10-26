@@ -60,7 +60,17 @@ function renderA(base){
  let sat=count(base,x=>x.satisfacao),satLabels=Object.keys(sat).sort();if(charts['#chSat'])charts['#chSat'].destroy();charts['#chSat']=new Chart($('#chSat'),{type:'doughnut',data:{labels:satLabels,datasets:[{label:'Avaliações',data:satLabels.map(k=>sat[k]),backgroundColor:satLabels.map(k=>({1:'#d73027',2:'#fc8d59',3:'#fee08b',4:'#74add1',5:'#1f4e79'}[String(k)]||'#9aa0a6'))}]},options:{responsive:true,maintainAspectRatio:false,onClick:(evt,els)=>{if(!els.length)return;let nota=satLabels[els[0].index];S.sat=String(S.sat)===String(nota)?null:nota;renderA(base)},plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:10}}}}}});
  renderQuestionCharts(a);let note=$('#satFilterNote');if(S.sat!==null){note.hidden=false;note.innerHTML=`<b>Filtro pela satisfação geral:</b> nota ${esc(S.sat)} — ${fmt(a.length)} avaliações. Clique novamente na nota para remover.`}else{note.hidden=true;note.textContent=''}$('#posComments').innerHTML=a.filter(x=>x.comentario_positivo).map(x=>`<div class="comment">${esc(x.comentario_positivo)}</div>`).join('')||'<p class="small">Sem comentários.</p>';$('#negComments').innerHTML=a.filter(x=>x.ponto_melhoria).map(x=>`<div class="comment">${esc(x.ponto_melhoria)}</div>`).join('')||'<p class="small">Sem pontos registrados.</p>'}
 function renderQuestionCharts(a){const qs=a.length&&a[0].respostas?Object.keys(a[0].respostas):[];renderMiniSet('#questionCapGrid',a,qs.slice(0,8));renderMiniSet('#questionInstGrid',a,qs.slice(8))}
-function renderMiniSet(container,a,qs){let box=$(container);box.innerHTML=qs.map((q,i)=>`<article class="miniCard"><h3 title="${esc(q)}">${esc(q)}</h3><canvas id="mini_${container.slice(1)}_${i}"></canvas></article>`).join('');qs.forEach((q,i)=>{let id=`#mini_${container.slice(1)}_${i}`,m=count(a,x=>x.respostas?.[q]),labels=Object.keys(m);if(charts[id])charts[id].destroy();charts[id]=new Chart($(id),{type:'doughnut',data:{labels,datasets:[{data:labels.map(k=>m[k])}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${(100*c.raw/a.length).toFixed(1).replace('.',',')}%)`}}}}})})}
+function renderMiniSet(container,a,qs){
+ const box=$(container);
+ const palette={'SIM':'#2d9fe5','PARCIAL':'#ff6584','NÃO':'#d73d40','NÃO SE APLICA':'#9aa6b2'};
+ box.innerHTML=qs.map(q=>{
+   const m=count(a,x=>x.respostas?.[q]);const entries=Object.entries(m).sort((x,y)=>y[1]-x[1]);
+   const total=entries.reduce((sum,x)=>sum+x[1],0);
+   const segments=entries.map(([label,n])=>{const pct=total?100*n/total:0;const key=norm(label).toUpperCase();const color=palette[key]||'#607d8b';return `<span style="width:${pct}%;background:${color}" title="${esc(label)}: ${fmt(n)} (${pct.toFixed(1).replace('.',',')}%)"></span>`}).join('');
+   const rows=entries.map(([label,n])=>{const pct=total?100*n/total:0;const key=norm(label).toUpperCase();const color=palette[key]||'#607d8b';return `<div class="responseRow"><span class="responseLabel"><i style="background:${color}"></i>${esc(label)}</span><strong>${pct.toFixed(1).replace('.',',')}%</strong><span class="responseCount">${fmt(n)} resp.</span></div>`}).join('');
+   return `<article class="miniCard responseCard"><h3>${esc(q)}</h3><div class="responseBar" role="img" aria-label="Distribuição das respostas">${segments}</div><div class="responseDetails">${rows||'<p>Sem respostas</p>'}</div><p class="responseTotal">${fmt(total)} respostas válidas</p></article>`;
+ }).join('');
+}
 
 function gerarRelatorioPDF(){
   if(S.tab!=='avaliacao'){alert('Selecione Avaliação de Reação.');return;}
